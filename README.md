@@ -1,70 +1,81 @@
 # ✋ Detector de Mãos
 
-Aplicação Python para detecção de mãos e pontos de referência (landmarks) em tempo real a partir da câmera do computador. O projeto utiliza MediaPipe para processar as mãos e OpenCV para captura, manipulação e exibição dos frames.
+Aplicação Python para detecção de mãos e extração de landmarks em tempo real a partir da webcam. O projeto combina MediaPipe Hands para o processamento da imagem com OpenCV para captura, transformação e exibição dos frames.
 
 ## 🎯 Objetivo
 
-Demonstrar uma base reutilizável para identificar mãos em imagens capturadas pela webcam, desenhar suas conexões e destacar pontos específicos. A classe `DetectorMaos` concentra a integração com o MediaPipe.
+Disponibilizar uma implementação simples e reutilizável para detectar mãos, desenhar seus pontos de referência e conexões e obter as coordenadas dos landmarks identificados.
 
-## 🚀 Funcionalidades
+## ✨ Funcionalidades
 
-- 📹 Captura de vídeo pela câmera padrão.
-- ✋ Detecção de até duas mãos por frame.
-- 🔗 Desenho dos landmarks e conexões.
-- 📍 Obtenção das coordenadas dos pontos detectados.
-- 🎨 Destaque visual de um ponto específico.
-- ⚙️ Configuração de confiança, rastreamento e cores dos desenhos.
+- Captura de vídeo pela câmera padrão do computador.
+- Espelhamento horizontal dos frames para uma visualização semelhante a um espelho.
+- Detecção de até duas mãos por frame.
+- Desenho dos landmarks e das conexões das mãos detectadas.
+- Extração das coordenadas dos 21 landmarks da mão selecionada.
+- Destaque visual de um landmark específico, configurável por identificador.
+- Configuração do modo de detecção, número máximo de mãos, níveis de confiança e cores de desenho.
 
 ## 🛠️ Tecnologias utilizadas
 
-- Python 3.11 ou superior
-- OpenCV (`opencv-python`) 4.11.0.86
-- MediaPipe 0.10.21
-- NumPy 1.26.4
-- `uv` para gerenciamento do ambiente e dependências
+- Python 3.11.
+- OpenCV (`opencv-python`) 4.11.0.86.
+- MediaPipe 0.10.21.
+- NumPy 1.26.4.
+- uv para gerenciamento do ambiente e das dependências.
 
-## 📁 Organização do projeto
+## 🏗️ Organização do projeto
+
+O fluxo principal é direto: `main.py` captura os frames da webcam, aplica o espelhamento, solicita a detecção à classe `DetectorMaos` e exibe a imagem processada. O módulo `detectormaos.py` encapsula a integração com MediaPipe e a conversão dos landmarks em coordenadas de pixels.
+
+## 📁 Estrutura do projeto
 
 ```text
-.
-├── detectormaos.py   # Classe de detecção e extração dos pontos das mãos
-├── main.py           # Ponto de entrada e demonstração com a webcam
-├── pyproject.toml    # Metadados e dependências
-├── uv.lock           # Versões resolvidas pelo uv
-├── .python-version   # Versão indicada: 3.11
-└── .gitignore        # Arquivos ignorados pelo Git
+detector-mao/
+├── detectormaos.py
+├── main.py
+├── pyproject.toml
+├── uv.lock
+├── .python-version
+├── .gitignore
+└── README.md
 ```
 
-O diretório `.venv`, quando presente, é um ambiente virtual local e não é necessário para publicar o projeto.
-
-## ✅ Pré-requisitos
+## 📋 Pré-requisitos
 
 - Python 3.11 ou superior.
-- Uma câmera acessível pelo computador.
-- Permissão para o Python acessar a câmera.
-- `uv` instalado, caso seja utilizado o método recomendado.
+- Webcam acessível e permissão para o Python utilizá-la.
+- uv, caso seja utilizado o método recomendado.
 
-## 📦 Instalação com `uv`
+## 📦 Instalação
 
-O projeto possui `pyproject.toml` e `uv.lock`:
+### ⚡ Opção 1 — uv
+
+Com o uv instalado, sincronize o ambiente a partir do `pyproject.toml` e do `uv.lock`:
 
 ```bash
 uv sync
-uv run python main.py
 ```
 
-Não há dependências de desenvolvimento declaradas.
+### 🐍 Opção 2 — pip
 
-## 🐍 Instalação tradicional com `pip`
+```bash
+python -m venv .venv
+```
 
-Crie e ative um ambiente virtual:
+No Windows PowerShell:
 
 ```powershell
-python -m venv .venv
-.venv\Scripts\activate
+.venv\Scripts\Activate.ps1
 ```
 
-No Linux/macOS, use `source .venv/bin/activate`. Depois instale as dependências:
+No Linux/macOS:
+
+```bash
+source .venv/bin/activate
+```
+
+Instale as dependências declaradas no projeto:
 
 ```bash
 python -m pip install --upgrade pip
@@ -73,33 +84,47 @@ python -m pip install mediapipe==0.10.21 numpy==1.26.4 opencv-python==4.11.0.86
 
 ## ▶️ Como executar
 
+Com uv:
+
+```bash
+uv run python main.py
+```
+
+Com o ambiente virtual ativado:
+
 ```bash
 python main.py
 ```
 
-O programa acessa a câmera de índice `0`, espelha a imagem horizontalmente e abre uma janela chamada `Capitura` com os landmarks detectados. Para encerrar, interrompa o processo no terminal ou feche a janela.
+O programa acessa a câmera de índice `0`, espelha cada frame e exibe a janela `Capitura` com os landmarks desenhados. O loop atual não define uma tecla de encerramento; interrompa o processo pelo terminal quando necessário.
 
-## 💻 Como utilizar a classe
+## 💻 Como utilizar
 
-O fluxo utilizado em `main.py` é:
+A classe `DetectorMaos` pode ser utilizada sobre frames BGR do OpenCV:
 
 ```python
+from detectormaos import DetectorMaos
+
 detector = DetectorMaos()
 imagem = detector.encontrar_maos(imagem)
 lista_pontos = detector.encontrar_pontos(imagem, ponto_detectado=0)
 ```
 
-`encontrar_maos` processa um frame BGR e desenha as mãos por padrão. `encontrar_pontos` retorna uma lista no formato `[id, x, y]` para os landmarks da mão selecionada.
+`encontrar_maos` processa o frame e, por padrão, desenha os landmarks e as conexões. `encontrar_pontos` retorna uma lista no formato `[id, x, y]`, com coordenadas em pixels da mão selecionada.
 
-## 🔧 Dependências e configuração
+## 📚 Dependências e configuração
 
-As dependências diretas e suas versões estão em `pyproject.toml` e travadas em `uv.lock`. O projeto não possui arquivos `.env`, variáveis de ambiente, banco de dados ou serviços externos configurados.
+As dependências diretas e suas versões estão declaradas em `pyproject.toml` e resolvidas em `uv.lock`. Não há variáveis de ambiente, arquivos `.env`, banco de dados, modelos locais adicionais ou serviços externos configurados.
 
-## 💡 Possíveis melhorias
+## ✅ Testes
 
-Podem ser considerados o tratamento de falhas na câmera, uma forma explícita de encerrar o loop e testes para componentes que não dependam de uma câmera física.
+Não há testes automatizados ou framework de testes configurado no repositório. A validação prevista atualmente é a execução da aplicação com uma webcam disponível.
 
-## 👤 Autor
+## 🚀 Possíveis melhorias
+
+Podem ser considerados o tratamento de falhas na abertura ou leitura da câmera, uma tecla para encerrar o loop com segurança e testes unitários para a lógica que não depende de uma webcam física.
+
+## 👨‍💻 Autor
 
 **Robert Melo**
 
