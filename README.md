@@ -116,9 +116,19 @@ lista_pontos = detector.encontrar_pontos(imagem, ponto_detectado=0)
 
 As dependências diretas e suas versões estão declaradas em `pyproject.toml` e resolvidas em `uv.lock`. Não há variáveis de ambiente, arquivos `.env`, banco de dados, modelos locais adicionais ou serviços externos configurados.
 
-## ✅ Testes
+## ✅ Testes e validação
 
-Não há testes automatizados ou framework de testes configurado no repositório. A validação prevista atualmente é a execução da aplicação com uma webcam disponível.
+Não há testes automatizados no repositório. A compilação sintática dos módulos pode ser verificada com:
+
+```bash
+python -m compileall -q main.py detectormaos.py
+```
+
+A validação funcional depende de uma câmera disponível e deve ser feita executando `main.py`:
+
+```bash
+python main.py
+```
 
 ## 🚀 Possíveis melhorias
 
