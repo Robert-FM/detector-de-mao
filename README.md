@@ -95,10 +95,6 @@ lista_pontos = detector.encontrar_pontos(imagem, ponto_detectado=0)
 
 As dependências diretas e suas versões estão em `pyproject.toml` e travadas em `uv.lock`. O projeto não possui arquivos `.env`, variáveis de ambiente, banco de dados ou serviços externos configurados.
 
-## 🧪 Testes
-
-Não foram encontrados testes automatizados. A validação disponível é a execução da aplicação com uma câmera compatível.
-
 ## 💡 Possíveis melhorias
 
 Podem ser considerados o tratamento de falhas na câmera, uma forma explícita de encerrar o loop e testes para componentes que não dependam de uma câmera física.
